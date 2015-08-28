@@ -25,8 +25,6 @@
 		49DC4A7A1B14F1F600B4E78E /* ImagePreviewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DC4A721B14F1F600B4E78E /* ImagePreviewFlowLayout.swift */; };
 		49DC4A7B1B14F1F600B4E78E /* ImagePreviewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DC4A731B14F1F600B4E78E /* ImagePreviewTableViewCell.swift */; };
 		49DC4A7C1B14F1F600B4E78E /* PreviewSupplementaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DC4A741B14F1F600B4E78E /* PreviewSupplementaryView.swift */; };
-		49DC4A7E1B14F22200B4E78E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49DC4A7D1B14F22200B4E78E /* Images.xcassets */; };
-		49DC4A801B14F2EF00B4E78E /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49DC4A7F1B14F2EF00B4E78E /* Photos.framework */; };
 		49DC4A8B1B14F31500B4E78E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DC4A8A1B14F31500B4E78E /* AppDelegate.swift */; };
 		49DC4A8D1B14F31500B4E78E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49DC4A8C1B14F31500B4E78E /* ViewController.swift */; };
 		49DC4A951B14F31500B4E78E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 49DC4A931B14F31500B4E78E /* LaunchScreen.xib */; };
@@ -36,6 +34,14 @@
 		49DC4AB01B14FB9A00B4E78E /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49DC4AAE1B14FB9A00B4E78E /* Quick.framework */; };
 		49F3118A1B15074100ACD6A7 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 49F3118C1B15074100ACD6A7 /* Localizable.stringsdict */; };
 		49F3118D1B15074400ACD6A7 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 49F3118F1B15074400ACD6A7 /* Localizable.strings */; };
+		BF9CB2AC1B904CB100D85229 /* PreviewSupplementaryView-Checkmark-Selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BF9CB2A81B904CB100D85229 /* PreviewSupplementaryView-Checkmark-Selected@2x.png */; };
+		BF9CB2AD1B904CB100D85229 /* PreviewSupplementaryView-Checkmark-Selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BF9CB2A81B904CB100D85229 /* PreviewSupplementaryView-Checkmark-Selected@2x.png */; };
+		BF9CB2AE1B904CB100D85229 /* PreviewSupplementaryView-Checkmark-Selected@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = BF9CB2A91B904CB100D85229 /* PreviewSupplementaryView-Checkmark-Selected@3x.png */; };
+		BF9CB2AF1B904CB100D85229 /* PreviewSupplementaryView-Checkmark-Selected@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = BF9CB2A91B904CB100D85229 /* PreviewSupplementaryView-Checkmark-Selected@3x.png */; };
+		BF9CB2B01B904CB100D85229 /* PreviewSupplementaryView-Checkmark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BF9CB2AA1B904CB100D85229 /* PreviewSupplementaryView-Checkmark@2x.png */; };
+		BF9CB2B11B904CB100D85229 /* PreviewSupplementaryView-Checkmark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BF9CB2AA1B904CB100D85229 /* PreviewSupplementaryView-Checkmark@2x.png */; };
+		BF9CB2B21B904CB100D85229 /* PreviewSupplementaryView-Checkmark@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = BF9CB2AB1B904CB100D85229 /* PreviewSupplementaryView-Checkmark@3x.png */; };
+		BF9CB2B31B904CB100D85229 /* PreviewSupplementaryView-Checkmark@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = BF9CB2AB1B904CB100D85229 /* PreviewSupplementaryView-Checkmark@3x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -107,8 +113,6 @@
 		49DC4A721B14F1F600B4E78E /* ImagePreviewFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePreviewFlowLayout.swift; sourceTree = "<group>"; };
 		49DC4A731B14F1F600B4E78E /* ImagePreviewTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePreviewTableViewCell.swift; sourceTree = "<group>"; };
 		49DC4A741B14F1F600B4E78E /* PreviewSupplementaryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewSupplementaryView.swift; sourceTree = "<group>"; };
-		49DC4A7D1B14F22200B4E78E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		49DC4A7F1B14F2EF00B4E78E /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		49DC4A861B14F31500B4E78E /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		49DC4A891B14F31500B4E78E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		49DC4A8A1B14F31500B4E78E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -118,6 +122,10 @@
 		49DC4AAE1B14FB9A00B4E78E /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = ../Carthage/Build/iOS/Quick.framework; sourceTree = "<group>"; };
 		49F3118B1B15074100ACD6A7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = Base; path = Base.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		49F3118E1B15074400ACD6A7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BF9CB2A81B904CB100D85229 /* PreviewSupplementaryView-Checkmark-Selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PreviewSupplementaryView-Checkmark-Selected@2x.png"; sourceTree = "<group>"; };
+		BF9CB2A91B904CB100D85229 /* PreviewSupplementaryView-Checkmark-Selected@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PreviewSupplementaryView-Checkmark-Selected@3x.png"; sourceTree = "<group>"; };
+		BF9CB2AA1B904CB100D85229 /* PreviewSupplementaryView-Checkmark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PreviewSupplementaryView-Checkmark@2x.png"; sourceTree = "<group>"; };
+		BF9CB2AB1B904CB100D85229 /* PreviewSupplementaryView-Checkmark@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "PreviewSupplementaryView-Checkmark@3x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,7 +133,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				49DC4A801B14F2EF00B4E78E /* Photos.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -177,6 +184,10 @@
 		49DC4A531B14F1BC00B4E78E /* ImagePickerSheetController */ = {
 			isa = PBXGroup;
 			children = (
+				BF9CB2A81B904CB100D85229 /* PreviewSupplementaryView-Checkmark-Selected@2x.png */,
+				BF9CB2A91B904CB100D85229 /* PreviewSupplementaryView-Checkmark-Selected@3x.png */,
+				BF9CB2AA1B904CB100D85229 /* PreviewSupplementaryView-Checkmark@2x.png */,
+				BF9CB2AB1B904CB100D85229 /* PreviewSupplementaryView-Checkmark@3x.png */,
 				49DC4A6D1B14F1F600B4E78E /* AnimationController.swift */,
 				49DC4A6E1B14F1F600B4E78E /* ImageAction.swift */,
 				49DC4A6F1B14F1F600B4E78E /* ImageCollectionViewCell.swift */,
@@ -185,7 +196,6 @@
 				49DC4A721B14F1F600B4E78E /* ImagePreviewFlowLayout.swift */,
 				49DC4A731B14F1F600B4E78E /* ImagePreviewTableViewCell.swift */,
 				49DC4A741B14F1F600B4E78E /* PreviewSupplementaryView.swift */,
-				49DC4A7D1B14F22200B4E78E /* Images.xcassets */,
 				49DC4A541B14F1BC00B4E78E /* Supporting Files */,
 			);
 			path = ImagePickerSheetController;
@@ -245,7 +255,6 @@
 				49A408481B2186D500D6005C /* IOKit.framework */,
 				49A408461B21854300D6005C /* CoreGraphics.framework */,
 				49A408441B21853E00D6005C /* KIF.framework */,
-				49DC4A7F1B14F2EF00B4E78E /* Photos.framework */,
 				49DC4AAD1B14FB9A00B4E78E /* Nimble.framework */,
 				49DC4AAE1B14FB9A00B4E78E /* Quick.framework */,
 			);
@@ -370,7 +379,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				49DC4A7E1B14F22200B4E78E /* Images.xcassets in Resources */,
+				BF9CB2AE1B904CB100D85229 /* PreviewSupplementaryView-Checkmark-Selected@3x.png in Resources */,
+				BF9CB2B01B904CB100D85229 /* PreviewSupplementaryView-Checkmark@2x.png in Resources */,
+				BF9CB2AC1B904CB100D85229 /* PreviewSupplementaryView-Checkmark-Selected@2x.png in Resources */,
+				BF9CB2B21B904CB100D85229 /* PreviewSupplementaryView-Checkmark@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -386,7 +398,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				49DC4A951B14F31500B4E78E /* LaunchScreen.xib in Resources */,
+				BF9CB2AD1B904CB100D85229 /* PreviewSupplementaryView-Checkmark-Selected@2x.png in Resources */,
+				BF9CB2B31B904CB100D85229 /* PreviewSupplementaryView-Checkmark@3x.png in Resources */,
+				BF9CB2AF1B904CB100D85229 /* PreviewSupplementaryView-Checkmark-Selected@3x.png in Resources */,
 				49F3118D1B15074400ACD6A7 /* Localizable.strings in Resources */,
+				BF9CB2B11B904CB100D85229 /* PreviewSupplementaryView-Checkmark@2x.png in Resources */,
 				49F3118A1B15074100ACD6A7 /* Localizable.stringsdict in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -512,7 +528,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -554,7 +570,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -574,7 +590,7 @@
 				FRAMEWORK_SEARCH_PATHS = "";
 				INFOPLIST_FILE = ImagePickerSheetController/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -591,7 +607,7 @@
 				FRAMEWORK_SEARCH_PATHS = "";
 				INFOPLIST_FILE = ImagePickerSheetController/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

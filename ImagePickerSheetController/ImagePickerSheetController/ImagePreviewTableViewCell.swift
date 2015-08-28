@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ImagePreviewTableViewCell : UITableViewCell {
+@objc class ImagePreviewTableViewCell : UITableViewCell {
     
     var collectionView: ImagePickerCollectionView? {
         willSet {

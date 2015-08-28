@@ -43,7 +43,7 @@ public typealias Title = Int -> String
     /// Secondary title defaults to title if not specified. Use the closure to format a title according to the selection.
     /// Secondary Handler defaults to handler if both, the secondary handler and secondary title are not specified.
     public init(primaryTitle: String, secondaryTitle: Title?, style: ImageActionStyle = .Default, handler: Handler? = nil, secondaryHandler: SecondaryHandler? = nil) {
-       
+        
         self.title = primaryTitle
         self.secondaryTitle = secondaryTitle ?? { _ in primaryTitle }
         self.style = style

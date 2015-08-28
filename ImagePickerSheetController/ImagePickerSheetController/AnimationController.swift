@@ -44,6 +44,7 @@ class AnimationController: NSObject, UIViewControllerAnimatedTransitioning {
         let tableViewOriginY = imagePickerSheetController.tableView.frame.origin.y
         imagePickerSheetController.tableView.frame.origin.y = containerView.bounds.maxY
         imagePickerSheetController.backgroundView.alpha = 0
+        self.imagePickerSheetController.tableView.frame = CGRectMake(0, containerView.bounds.maxY, containerView.bounds.width, self.imagePickerSheetController.tableView.frame.height)
         
         UIView.animateWithDuration(transitionDuration(context), animations: {
             self.imagePickerSheetController.tableView.frame.origin.y = tableViewOriginY

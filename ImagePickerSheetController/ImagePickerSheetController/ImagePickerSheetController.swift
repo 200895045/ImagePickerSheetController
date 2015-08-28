@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Photos
 import AssetsLibrary
 
 private let tableViewPreviewRowHeight: CGFloat = 140.0
@@ -25,7 +24,7 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
         tableView.dataSource = self
         tableView.delegate = self
         tableView.alwaysBounceVertical = false
-        tableView.layoutMargins = UIEdgeInsetsZero
+//        tableView.layoutMargins = UIEdgeInsetsZero
         tableView.separatorInset = UIEdgeInsetsZero
         tableView.registerClass(ImagePreviewTableViewCell.self, forCellReuseIdentifier: NSStringFromClass(ImagePreviewTableViewCell.self))
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: NSStringFromClass(UITableViewCell.self))
@@ -95,7 +94,7 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
     
     private var supplementaryViews = [Int: PreviewSupplementaryView]()
     
-    private let imageManager = PHCachingImageManager()
+//    private let imageManager = PHCachingImageManager()
     
     // MARK: - Initialization
     
@@ -132,25 +131,18 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
     public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        if PHPhotoLibrary.authorizationStatus() == .Authorized {
-            fetchAssets()
-        }
+        fetchAssets()
+
     }
     
     public override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        if PHPhotoLibrary.authorizationStatus() == .NotDetermined {
-            PHPhotoLibrary.requestAuthorization() { status in
-                if status == .Authorized {
-                    dispatch_async(dispatch_get_main_queue()) {
-                        self.fetchAssets()
-                        
-                        self.tableView.reloadData()
-                        self.view.setNeedsLayout()
-                    }
-                }
-            }
+        dispatch_async(dispatch_get_main_queue()) {
+//            self.fetchAssets()
+            
+            self.tableView.reloadData()
+            self.view.setNeedsLayout()
         }
     }
     
@@ -191,7 +183,7 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
                 indicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.Gray
                 indicatorView.startAnimating()
             }
-           
+            
             return cell
         }
         
@@ -202,7 +194,7 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
         cell.textLabel?.textColor = tableView.tintColor
         cell.textLabel?.font = UIFont.systemFontOfSize(21)
         cell.textLabel?.text = selectedImageIndices.count > 0 ? action.secondaryTitle(numberOfSelectedImages) : action.title
-        cell.layoutMargins = UIEdgeInsetsZero
+//        cell.layoutMargins = UIEdgeInsetsZero
         
         return cell
     }
@@ -238,10 +230,10 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
             let asset = allAssets[indexPath.section]
             let size = sizeForAsset(asset)
             autoreleasepool{
-
-            requestImageForAsset(asset, size: size) { image in
-                cell.imageView.image = image
-            }
+                
+                requestImageForAsset(asset, size: size) { image in
+                    cell.imageView.image = image
+                }
             }
             cell.selected = contains(selectedImageIndices, indexPath.section)
         }
@@ -399,7 +391,7 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
                 
                 self.collectionView.reloadData()
                 self.tableView.reloadData()
-                self.indicatorView.stopAnimating()
+//                self.indicatorView.stopAnimating()
             }
             }) { (failure) -> Void in
                 
@@ -415,16 +407,16 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
         //        }
     }
     
-    private func requestImageForAsset(asset: ALAsset, size: CGSize? = nil, deliveryMode: PHImageRequestOptionsDeliveryMode = .Opportunistic, completion: (image: UIImage?) -> Void) {
+    private func requestImageForAsset(asset: ALAsset, size: CGSize? = nil, completion: (image: UIImage?) -> Void) {
         
-            let options = PHImageRequestOptions()
-            options.deliveryMode = deliveryMode;
-            let image = UIImage(data: UIImageJPEGRepresentation(UIImage(CGImage : asset.defaultRepresentation().fullScreenImage().takeUnretainedValue()), 0.1))
-            completion(image: image)
-//        var targetSize = PHImageManagerMaximumSize
-//        if let size = size {
-//            targetSize = targetSizeForAssetOfSize(size)
-//        }
+//        let options = PHImageRequestOptions()
+//        options.deliveryMode = deliveryMode;
+        let image = UIImage(data: UIImageJPEGRepresentation(UIImage(CGImage : asset.defaultRepresentation().fullScreenImage().takeUnretainedValue()), 0.1))
+        completion(image: image)
+        //        var targetSize = PHImageManagerMaximumSize
+        //        if let size = size {
+        //            targetSize = targetSizeForAssetOfSize(size)
+        //        }
         //        // Workaround because PHImageManager.requestImageForAsset doesn't work for burst images
         //        if asset.representsBurst {
         //            imageManager.requestImageDataForAsset(asset, options: options) { data, _, _, _ in
