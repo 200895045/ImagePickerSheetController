@@ -38,12 +38,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         }
         
         let controller = ImagePickerSheetController()
-        controller.addAction(ImageAction(title: NSLocalizedString("Take Photo Or Video", comment: "Action Title"), secondaryTitle: NSLocalizedString("Add comment", comment: "Action Title"), handler: { _ in
+        controller.addAction(ImageAction(primaryTitle: NSLocalizedString("Take Photo Or Video", comment: "Action Title"), secondaryTitle: { NSString.localizedStringWithFormat("1111Send %lu Photo", $0) as String}, handler: { _ in
             presentImagePickerController(.Camera)
             }, secondaryHandler: { _, numberOfPhotos in
                 println("Comment \(numberOfPhotos) photos")
         }))
-        controller.addAction(ImageAction(title: NSLocalizedString("Photo Library", comment: "Action Title"), secondaryTitle: { NSString.localizedStringWithFormat(NSLocalizedString("ImagePickerSheet.button1.Send %lu Photo", comment: "Action Title"), $0) as String}, handler: { _ in
+        controller.addAction(ImageAction(primaryTitle: NSLocalizedString("Photo Library", comment: "Action Title"), secondaryTitle: { NSString.localizedStringWithFormat("1111Send %lu Photo", $0) as String}, handler: { _ in
             presentImagePickerController(.PhotoLibrary)
             }, secondaryHandler: { _, numberOfPhotos in
                 println("Send \(controller.selectedImageAssets)")
