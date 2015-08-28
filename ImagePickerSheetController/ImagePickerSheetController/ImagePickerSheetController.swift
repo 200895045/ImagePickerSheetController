@@ -8,13 +8,16 @@
 
 import Foundation
 import Photos
+import AssetsLibrary
 
 private let tableViewPreviewRowHeight: CGFloat = 140.0
 private let tableViewEnlargedPreviewRowHeight: CGFloat = 243.0
 private let collectionViewInset: CGFloat = 5.0
 private let collectionViewCheckmarkInset: CGFloat = 3.5
 
-public class ImagePickerSheetController: UIViewController, UITableViewDataSource, UITableViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIViewControllerTransitioningDelegate {
+@objc public class ImagePickerSheetController: UIViewController, UITableViewDataSource, UITableViewDelegate, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UIViewControllerTransitioningDelegate {
+    
+    var indicatorView: UIActivityIndicatorView!
     
     lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -28,7 +31,7 @@ public class ImagePickerSheetController: UIViewController, UITableViewDataSource
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: NSStringFromClass(UITableViewCell.self))
         
         return tableView
-    }()
+        }()
     
     private lazy var collectionView: ImagePickerCollectionView = {
         let collectionView = ImagePickerCollectionView()
@@ -45,7 +48,7 @@ public class ImagePickerSheetController: UIViewController, UITableViewDataSource
         collectionView.registerClass(PreviewSupplementaryView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: NSStringFromClass(PreviewSupplementaryView.self))
         
         return collectionView
-    }()
+        }()
     
     lazy var backgroundView: UIView = {
         let view = UIView()
@@ -54,7 +57,7 @@ public class ImagePickerSheetController: UIViewController, UITableViewDataSource
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "cancel"))
         
         return view
-    }()
+        }()
     
     /// All the actions in the same order as they were added. The first action is shown at the top.
     public private(set) var actions = [ImageAction]() {
@@ -67,9 +70,14 @@ public class ImagePickerSheetController: UIViewController, UITableViewDataSource
     }
     
     /// Maximum selection of images.
-    public var maximumSelection: Int?
+    public var maximumSelection: Int = Int.max {
+        didSet {
+        }
+    }
     
-    private var assets = [PHAsset]()
+    //    private var assets = [PHAsset]()
+    private var allAssets = [ALAsset]()
+    private var thumbnails = [UIImage]()
     
     private var selectedImageIndices = [Int]()
     
@@ -79,8 +87,8 @@ public class ImagePickerSheetController: UIViewController, UITableViewDataSource
     }
     
     /// The selected image assets
-    public var selectedImageAssets: [PHAsset] {
-        return selectedImageIndices.map { self.assets[$0] }
+    public var selectedImageAssets: [ALAsset] {
+        return selectedImageIndices.map { self.allAssets[$0] }
     }
     
     private(set) var enlargedPreviews = false
@@ -95,7 +103,7 @@ public class ImagePickerSheetController: UIViewController, UITableViewDataSource
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         initialize()
     }
-
+    
     required public init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         initialize()
@@ -104,6 +112,12 @@ public class ImagePickerSheetController: UIViewController, UITableViewDataSource
     private func initialize() {
         modalPresentationStyle = .Custom
         transitioningDelegate = self
+        let center = NSNotificationCenter.defaultCenter()
+        center.addObserver(self, selector: "assetsLibraryChanged:", name: ALAssetsLibraryChangedNotification, object: nil)
+    }
+    
+    private func assetsLibraryChanged(notification:NSNotification) {
+        
     }
     
     // MARK: - View Lifecycle
@@ -156,11 +170,7 @@ public class ImagePickerSheetController: UIViewController, UITableViewDataSource
     
     public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         if indexPath.section == 0 {
-            if assets.count > 0 {
-                return enlargedPreviews ? tableViewEnlargedPreviewRowHeight : tableViewPreviewRowHeight
-            }
-            
-            return 0
+            return enlargedPreviews ? tableViewEnlargedPreviewRowHeight : tableViewPreviewRowHeight
         }
         
         return 50
@@ -169,9 +179,19 @@ public class ImagePickerSheetController: UIViewController, UITableViewDataSource
     public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCellWithIdentifier(NSStringFromClass(ImagePreviewTableViewCell.self), forIndexPath: indexPath) as! ImagePreviewTableViewCell
-            cell.collectionView = collectionView
-            cell.separatorInset = UIEdgeInsets(top: 0, left: tableView.bounds.width, bottom: 0, right: 0)
-            
+            if allAssets.count > 0 {
+                cell.collectionView = collectionView
+                cell.separatorInset = UIEdgeInsets(top: 0, left: tableView.bounds.width, bottom: 0, right: 0)
+                
+            }else {
+                indicatorView = UIActivityIndicatorView()
+                cell.addSubview(indicatorView)
+                indicatorView.hidesWhenStopped = true
+                indicatorView.frame = CGRectMake(cell.center.x-15, cell.center.y-15, 30, 30)
+                indicatorView.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.Gray
+                indicatorView.startAnimating()
+            }
+           
             return cell
         }
         
@@ -204,7 +224,7 @@ public class ImagePickerSheetController: UIViewController, UITableViewDataSource
     // MARK: - UICollectionViewDataSource
     
     public func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        return assets.count
+        return allAssets.count
     }
     
     public func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -214,15 +234,17 @@ public class ImagePickerSheetController: UIViewController, UITableViewDataSource
     public func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(NSStringFromClass(ImageCollectionViewCell.self), forIndexPath: indexPath) as! ImageCollectionViewCell
         
-        let asset = assets[indexPath.section]
-        let size = sizeForAsset(asset)
-        
-        requestImageForAsset(asset, size: size) { image in
-            cell.imageView.image = image
+        if allAssets.count > indexPath.section{
+            let asset = allAssets[indexPath.section]
+            let size = sizeForAsset(asset)
+            autoreleasepool{
+
+            requestImageForAsset(asset, size: size) { image in
+                cell.imageView.image = image
+            }
+            }
+            cell.selected = contains(selectedImageIndices, indexPath.section)
         }
-        
-        cell.selected = contains(selectedImageIndices, indexPath.section)
-        
         return cell
     }
     
@@ -240,9 +262,15 @@ public class ImagePickerSheetController: UIViewController, UITableViewDataSource
     // MARK: - UICollectionViewDelegateFlowLayout
     
     public func collectionView(collectionView: UICollectionView, layout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-        let asset = assets[indexPath.section]
         
-        return sizeForAsset(asset)
+        if allAssets.count > indexPath.section{
+            let asset = allAssets[indexPath.section]
+            let thumbnail = thumbnails[indexPath.section]
+            return sizeForAsset(asset)
+        }else
+        {
+            return CGSizeZero
+        }
     }
     
     public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
@@ -257,8 +285,8 @@ public class ImagePickerSheetController: UIViewController, UITableViewDataSource
     
     public func collectionView(collectionView: UICollectionView, willDisplayCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
         let nextIndex = indexPath.row+1
-        if nextIndex < assets.count {
-            let asset = assets[nextIndex]
+        if nextIndex < allAssets.count {
+            let asset = allAssets[nextIndex]
             let size = sizeForAsset(asset)
             
             self.prefetchImagesForAsset(asset, size: size)
@@ -266,12 +294,11 @@ public class ImagePickerSheetController: UIViewController, UITableViewDataSource
     }
     
     public func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        if let maximumSelection = maximumSelection {
-            if selectedImageIndices.count >= maximumSelection,
-                let previousItemIndex = selectedImageIndices.first {
-                    supplementaryViews[previousItemIndex]?.selected = false
-                    selectedImageIndices.removeAtIndex(0)
-            }
+        
+        if selectedImageIndices.count >= maximumSelection,
+            let previousItemIndex = selectedImageIndices.first {
+                supplementaryViews[previousItemIndex]?.selected = false
+                selectedImageIndices.removeAtIndex(0)
         }
         
         selectedImageIndices.append(indexPath.section)
@@ -302,7 +329,7 @@ public class ImagePickerSheetController: UIViewController, UITableViewDataSource
             
             reloadButtons()
         }
-
+        
         supplementaryViews[indexPath.section]?.selected = true
     }
     
@@ -331,13 +358,13 @@ public class ImagePickerSheetController: UIViewController, UITableViewDataSource
     
     // MARK: - Images
     
-    private func sizeForAsset(asset: PHAsset) -> CGSize {
-        let proportion = CGFloat(asset.pixelWidth)/CGFloat(asset.pixelHeight)
+    private func sizeForAsset(asset: ALAsset) -> CGSize {
+        let proportion = CGFloat(asset.defaultRepresentation().dimensions().width)/CGFloat(asset.defaultRepresentation().dimensions().height)
         
         let height: CGFloat = {
             let rowHeight = self.enlargedPreviews ? tableViewEnlargedPreviewRowHeight : tableViewPreviewRowHeight
             return rowHeight-2.0*collectionViewInset
-        }()
+            }()
         
         return CGSize(width: CGFloat(floorf(Float(proportion*height))), height: height)
     }
@@ -347,47 +374,77 @@ public class ImagePickerSheetController: UIViewController, UITableViewDataSource
         return CGSize(width: scale*size.width, height: scale*size.height)
     }
     
+    private  var defaultAssetGroup:ALAssetsGroup!
+    private  var assetsLibrary:ALAssetsLibrary = ALAssetsLibrary()
+    
+    
     private func fetchAssets() {
-        let options = PHFetchOptions()
-        options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
-        let result = PHAsset.fetchAssetsWithMediaType(.Image, options: options)
         
-        result.enumerateObjectsUsingBlock { obj, _, _ in
-            if let asset = obj as? PHAsset where self.assets.count < 50 {
-                self.assets.append(asset)
+        self.assetsLibrary.enumerateGroupsWithTypes(ALAssetsGroupSavedPhotos, usingBlock: { (group, stop) -> Void in
+            if group != nil {
+                if ALAssetsGroupSavedPhotos == UInt32(group.valueForProperty(ALAssetsGroupPropertyType).integerValue) {
+                    self.defaultAssetGroup = group
+                }
+                
+            }else {
+                self.defaultAssetGroup.setAssetsFilter(ALAssetsFilter.allAssets())
+                self.defaultAssetGroup.enumerateAssetsWithOptions(NSEnumerationOptions.Reverse, usingBlock:{(asset: ALAsset!, index, stop) -> Void in
+                    autoreleasepool{
+                        if asset != nil && self.allAssets.count < 50 {
+                            self.allAssets.append(asset)
+                            self.thumbnails.append(UIImage(CGImage: asset.thumbnail().takeUnretainedValue())!)
+                        }
+                    }
+                })
+                
+                self.collectionView.reloadData()
+                self.tableView.reloadData()
+                self.indicatorView.stopAnimating()
             }
+            }) { (failure) -> Void in
+                
         }
+        //        let options = PHFetchOptions()
+        //        options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        //        let result = PHAsset.fetchAssetsWithMediaType(.Image, options: options)
+        //
+        //        result.enumerateObjectsUsingBlock { obj, _, _ in
+        //            if let asset = obj as? PHAsset where self.assets.count < 50 {
+        //                self.assets.append(asset)
+        //            }
+        //        }
     }
     
-    private func requestImageForAsset(asset: PHAsset, size: CGSize? = nil, deliveryMode: PHImageRequestOptionsDeliveryMode = .Opportunistic, completion: (image: UIImage?) -> Void) {
-        var targetSize = PHImageManagerMaximumSize
-        if let size = size {
-            targetSize = targetSizeForAssetOfSize(size)
-        }
+    private func requestImageForAsset(asset: ALAsset, size: CGSize? = nil, deliveryMode: PHImageRequestOptionsDeliveryMode = .Opportunistic, completion: (image: UIImage?) -> Void) {
         
-        let options = PHImageRequestOptions()
-        options.deliveryMode = deliveryMode;
-        
-        // Workaround because PHImageManager.requestImageForAsset doesn't work for burst images
-        if asset.representsBurst {
-            imageManager.requestImageDataForAsset(asset, options: options) { data, _, _, _ in
-                let image = UIImage(data: data)
-                completion(image: image)
-            }
-        }
-        else {
-            imageManager.requestImageForAsset(asset, targetSize: targetSize, contentMode: .AspectFill, options: options) { image, _ in
-                completion(image: image)
-            }
-        }
+            let options = PHImageRequestOptions()
+            options.deliveryMode = deliveryMode;
+            let image = UIImage(data: UIImageJPEGRepresentation(UIImage(CGImage : asset.defaultRepresentation().fullScreenImage().takeUnretainedValue()), 0.1))
+            completion(image: image)
+//        var targetSize = PHImageManagerMaximumSize
+//        if let size = size {
+//            targetSize = targetSizeForAssetOfSize(size)
+//        }
+        //        // Workaround because PHImageManager.requestImageForAsset doesn't work for burst images
+        //        if asset.representsBurst {
+        //            imageManager.requestImageDataForAsset(asset, options: options) { data, _, _, _ in
+        //                let image = UIImage(data: data)
+        //                completion(image: image)
+        //            }
+        //        }
+        //        else {
+        //            imageManager.requestImageForAsset(asset, targetSize: targetSize, contentMode: .AspectFill, options: options) { image, _ in
+        //                completion(image: image)
+        //            }
+        //        }
     }
     
-    private func prefetchImagesForAsset(asset: PHAsset, size: CGSize) {
+    private func prefetchImagesForAsset(asset: ALAsset, size: CGSize) {
         // Not necessary to cache image because PHImageManager won't return burst images
-        if !asset.representsBurst {
-            let targetSize = targetSizeForAssetOfSize(size)
-            imageManager.startCachingImagesForAssets([asset], targetSize: targetSize, contentMode: .AspectFill, options: nil)
-        }
+        //        if !asset.representsBurst {
+        //            let targetSize = targetSizeForAssetOfSize(size)
+        //            imageManager.startCachingImagesForAssets([asset], targetSize: targetSize, contentMode: .AspectFill, options: nil)
+        //        }
     }
     
     // MARK: - Buttons
@@ -415,7 +472,7 @@ public class ImagePickerSheetController: UIViewController, UITableViewDataSource
         let tableViewHeight = Array(0..<tableView.numberOfRowsInSection(1)).reduce(tableView(tableView, heightForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 0))) { total, row in
             total + tableView(tableView, heightForRowAtIndexPath: NSIndexPath(forRow: row, inSection: 1))
         }
-
+        
         tableView.frame = CGRect(x: view.bounds.minX, y: view.bounds.maxY-tableViewHeight, width: view.bounds.width, height: tableViewHeight)
     }
     
