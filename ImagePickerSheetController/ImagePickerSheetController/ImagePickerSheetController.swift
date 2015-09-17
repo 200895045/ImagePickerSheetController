@@ -103,7 +103,7 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
         initialize()
     }
     
-    required public init(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         initialize()
     }
@@ -189,7 +189,7 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
         
         let action = actions[indexPath.row]
         
-        let cell = tableView.dequeueReusableCellWithIdentifier(NSStringFromClass(UITableViewCell.self), forIndexPath: indexPath) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(NSStringFromClass(UITableViewCell.self), forIndexPath: indexPath) 
         cell.textLabel?.textAlignment = .Center
         cell.textLabel?.textColor = tableView.tintColor
         cell.textLabel?.font = UIFont.systemFontOfSize(21)
@@ -210,7 +210,7 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
         
         presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
         
-        actions[indexPath.row].handle(numberOfImages: numberOfSelectedImages)
+        actions[indexPath.row].handle(numberOfSelectedImages)
     }
     
     // MARK: - UICollectionViewDataSource
@@ -235,7 +235,7 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
                     cell.imageView.image = image
                 }
             }
-            cell.selected = contains(selectedImageIndices, indexPath.section)
+            cell.selected = selectedImageIndices.contains(indexPath.section)
         }
         return cell
     }
@@ -244,7 +244,7 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
         let view = collectionView.dequeueReusableSupplementaryViewOfKind(UICollectionElementKindSectionHeader, withReuseIdentifier: NSStringFromClass(PreviewSupplementaryView.self), forIndexPath: indexPath) as! PreviewSupplementaryView
         view.userInteractionEnabled = false
         view.buttonInset = UIEdgeInsetsMake(0.0, collectionViewCheckmarkInset, collectionViewCheckmarkInset, 0.0)
-        view.selected = contains(selectedImageIndices, indexPath.section)
+        view.selected = selectedImageIndices.contains(indexPath.section)
         
         supplementaryViews[indexPath.section] = view
         
@@ -257,7 +257,7 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
         
         if allAssets.count > indexPath.section{
             let asset = allAssets[indexPath.section]
-            let thumbnail = thumbnails[indexPath.section]
+//            let thumbnail = thumbnails[indexPath.section]
             return sizeForAsset(asset)
         }else
         {
@@ -326,7 +326,7 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
     }
     
     public func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath) {
-        if let index = find(selectedImageIndices, indexPath.section) {
+        if let index = selectedImageIndices.indexOf(indexPath.section) {
             selectedImageIndices.removeAtIndex(index)
             reloadButtons()
         }
@@ -384,7 +384,7 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
                     autoreleasepool{
                         if asset != nil && self.allAssets.count < 50 {
                             self.allAssets.append(asset)
-                            self.thumbnails.append(UIImage(CGImage: asset.thumbnail().takeUnretainedValue())!)
+//                            self.thumbnails.append(UIImage(CGImage: asset.thumbnail().takeUnretainedValue()))
                         }
                     }
                 })
@@ -411,7 +411,7 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
         
 //        let options = PHImageRequestOptions()
 //        options.deliveryMode = deliveryMode;
-        let image = UIImage(data: UIImageJPEGRepresentation(UIImage(CGImage : asset.defaultRepresentation().fullScreenImage().takeUnretainedValue()), 0.1))
+        let image = UIImage(data: UIImageJPEGRepresentation(UIImage(CGImage : asset.defaultRepresentation().fullScreenImage().takeUnretainedValue()), 0.1)!)
         completion(image: image)
         //        var targetSize = PHImageManagerMaximumSize
         //        if let size = size {
@@ -450,7 +450,7 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
         
         let cancelActions = actions.filter { $0.style == ImageActionStyle.Cancel }
         if let cancelAction = cancelActions.first {
-            cancelAction.handle(numberOfImages: numberOfSelectedImages)
+            cancelAction.handle(numberOfSelectedImages)
         }
     }
     
