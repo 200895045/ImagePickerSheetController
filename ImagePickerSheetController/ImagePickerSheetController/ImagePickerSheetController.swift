@@ -207,10 +207,12 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
     
     public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
+
+        weak var weakSelf: ImagePickerSheetController? = self
+        presentingViewController?.dismissViewControllerAnimated(true, completion: { () -> Void in
+            weakSelf!.actions[indexPath.row].handle(weakSelf!.numberOfSelectedImages)
+        })
         
-        presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
-        
-        actions[indexPath.row].handle(numberOfSelectedImages)
     }
     
     // MARK: - UICollectionViewDataSource

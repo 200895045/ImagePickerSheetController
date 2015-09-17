@@ -45,6 +45,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         }))
         controller.addAction(ImageAction(primaryTitle: NSLocalizedString("Photo Library", comment: "Action Title"), secondaryTitle: { NSString.localizedStringWithFormat("1111Send %lu Photo", $0) as String}, handler: { _ in
             presentImagePickerController(.PhotoLibrary)
+            
             }, secondaryHandler: { _, numberOfPhotos in
                 print("Send \(controller.selectedImageAssets)")
         }))
