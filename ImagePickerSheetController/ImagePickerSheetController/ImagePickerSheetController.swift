@@ -111,14 +111,8 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
     private func initialize() {
         modalPresentationStyle = .Custom
         transitioningDelegate = self
-        let center = NSNotificationCenter.defaultCenter()
-        center.addObserver(self, selector: "assetsLibraryChanged:", name: ALAssetsLibraryChangedNotification, object: nil)
     }
-    
-    private func assetsLibraryChanged(notification:NSNotification) {
-        
-    }
-    
+
     // MARK: - View Lifecycle
     
     override public func loadView() {
