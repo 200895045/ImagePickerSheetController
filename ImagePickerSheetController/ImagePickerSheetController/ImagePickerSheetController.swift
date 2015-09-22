@@ -28,7 +28,8 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
         tableView.separatorInset = UIEdgeInsetsZero
         tableView.registerClass(ImagePreviewTableViewCell.self, forCellReuseIdentifier: NSStringFromClass(ImagePreviewTableViewCell.self))
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: NSStringFromClass(UITableViewCell.self))
-        
+        let tableViewHeight = CGFloat(self.actions.count * 50) + tableViewPreviewRowHeight
+        tableView.frame = CGRect(x: self.view.bounds.minX, y: self.view.bounds.maxY-tableViewHeight, width: self.view.bounds.width, height: tableViewHeight)
         return tableView
         }()
     
@@ -91,6 +92,7 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
     }
     
     private(set) var enlargedPreviews = false
+    private(set) var shouldHidePreviews = false
     
     private var supplementaryViews = [Int: PreviewSupplementaryView]()
     
@@ -156,7 +158,7 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
     
     public func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         if indexPath.section == 0 {
-            return enlargedPreviews ? tableViewEnlargedPreviewRowHeight : tableViewPreviewRowHeight
+            return shouldHidePreviews ? 0 : enlargedPreviews ? tableViewEnlargedPreviewRowHeight : tableViewPreviewRowHeight
         }
         
         return 50
@@ -191,6 +193,17 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
 //        cell.layoutMargins = UIEdgeInsetsZero
         
         return cell
+    }
+    
+    public func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        if tableView.respondsToSelector(Selector("setSeparatorInset:"))
+        {
+            tableView.separatorInset = UIEdgeInsetsZero
+        }
+        if #available(iOS 8.0, *) {
+            tableView.layoutMargins = UIEdgeInsetsZero
+            cell.layoutMargins = UIEdgeInsetsZero
+        }
     }
     
     // MARK: - UITableViewDelegate
@@ -298,6 +311,8 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
             
             view.setNeedsLayout()
             UIView.animateWithDuration(0.3, animations: {
+                let tableViewHeight = CGFloat(self.actions.count * 50) + tableViewEnlargedPreviewRowHeight
+                self.tableView.frame = CGRect(x: self.view.bounds.minX, y: self.view.bounds.maxY-tableViewHeight, width: self.view.bounds.width, height: tableViewHeight)
                 self.tableView.beginUpdates()
                 self.tableView.endUpdates()
                 self.view.layoutIfNeeded()
@@ -380,11 +395,14 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
                     autoreleasepool{
                         if asset != nil && self.allAssets.count < 50 {
                             self.allAssets.append(asset)
-//                            self.thumbnails.append(UIImage(CGImage: asset.thumbnail().takeUnretainedValue()))
                         }
                     }
                 })
-                
+                if self.allAssets.count == 0 {
+                    self.shouldHidePreviews = true
+                    let tableViewHeight = CGFloat(self.actions.count * 50)
+                    self.tableView.frame = CGRect(x: self.view.bounds.minX, y: self.view.bounds.maxY-tableViewHeight, width: self.view.bounds.width, height: tableViewHeight)
+                }
                 self.collectionView.reloadData()
                 self.tableView.reloadData()
 //                self.indicatorView.stopAnimating()
@@ -456,12 +474,6 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
         super.viewDidLayoutSubviews()
         
         backgroundView.frame = view.bounds
-        
-        let tableViewHeight = Array(0..<tableView.numberOfRowsInSection(1)).reduce(tableView(tableView, heightForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 0))) { total, row in
-            total + tableView(tableView, heightForRowAtIndexPath: NSIndexPath(forRow: row, inSection: 1))
-        }
-        
-        tableView.frame = CGRect(x: view.bounds.minX, y: view.bounds.maxY-tableViewHeight, width: view.bounds.width, height: tableViewHeight)
     }
     
     // MARK: - Transitioning
