@@ -276,10 +276,8 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
     
     public func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         let inset = 2.0 * collectionViewCheckmarkInset
-        let size = self.collectionView(collectionView, layout: collectionViewLayout, sizeForItemAtIndexPath: NSIndexPath(forRow: 0, inSection: section))
         let imageWidth = PreviewSupplementaryView.checkmarkImage?.size.width ?? 0
-        
-        return CGSizeMake(imageWidth  + inset, size.height)
+        return CGSizeMake(imageWidth  + inset, tableViewEnlargedPreviewRowHeight - inset)
     }
     
     // MARK: - UICollectionViewDelegate
@@ -306,16 +304,12 @@ private let collectionViewCheckmarkInset: CGFloat = 3.5
         
         if !enlargedPreviews {
             enlargedPreviews = true
-            
             self.collectionView.imagePreviewLayout.invalidationCenteredIndexPath = indexPath
-            
-            view.setNeedsLayout()
             UIView.animateWithDuration(0.3, animations: {
                 let tableViewHeight = CGFloat(self.actions.count * 50) + tableViewEnlargedPreviewRowHeight
                 self.tableView.frame = CGRect(x: self.view.bounds.minX, y: self.view.bounds.maxY-tableViewHeight, width: self.view.bounds.width, height: tableViewHeight)
                 self.tableView.beginUpdates()
                 self.tableView.endUpdates()
-                self.view.layoutIfNeeded()
                 }, completion: { finished in
                     self.reloadButtons()
                     self.collectionView.imagePreviewLayout.showsSupplementaryViews = true
